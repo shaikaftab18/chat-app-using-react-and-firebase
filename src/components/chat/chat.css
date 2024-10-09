@@ -3,6 +3,9 @@
   border-left:1px solid #dddddd35;
   border-right:1px solid #dddddd35;
   height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
   .top{
     padding: 20px;
     display: flex;
@@ -47,7 +50,53 @@
       }
     }
   }
-  .center{}
+  .center{
+    padding: 20px;
+    flex:1;
+    overflow:scroll;
+    scrollbar-width:1%;
+    display: flex;
+    flex-direction: column;
+    overflow-x:hidden;
+    gap: 20px;
+    .message{
+      max-width:70%;
+      display: flex;
+      gap: 20px;
+      &.own{
+        align-self: flex-end;
+        .texts{
+          p{
+            background-color: #990000;
+            border-radius: 10px;
+            color: white;
+          }
+      }
+    }
+      img{
+        width;30px;
+        height:30px;
+        border-radius:50%;
+        object-fit:cover;
+      }
+      .texts{
+        flex:1;
+        display: flex;
+        flex-direction:column;
+        gap:5px;
+        scrollbar-width:1%;
+        p{
+          padding:20px;
+          background-color: #ff0000;
+          border-radius: 10px;
+        }
+        span{
+          font-size: 12px;
+    
+      }
+    }
+  }
+}
   .bottom{
     padding: 20px;
     display: flex;
@@ -72,7 +121,13 @@
       color: white;
       padding: 10px 20px;
       border-radius: 10px;
-      font-size: 16px;
+      font-size: 12px;
+    }
+    .emoji{
+      .picker{
+        position: absolute;
+        bottom: 50px;
+      }
     }
     .sendButton{
       background-color:#ff0000;
