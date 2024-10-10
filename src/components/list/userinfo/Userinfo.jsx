@@ -1,10 +1,12 @@
 import "./userinfo.css"
+import { useUserStore } from "../../../lib/useuserStore";
 const UserInfo =()=>{
+    const { currentUser } = useUserStore();
     return (
         <div className='userInfo'>
             <div className="user">
            <img src="./avatar.png"/>
-           <h3>aftab </h3>
+           <h2>currentUser.username </h2>
             </div>
             <div className="icons">
                 <img src="./more.png"/>
