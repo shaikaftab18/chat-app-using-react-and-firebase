@@ -38,8 +38,8 @@ const Login = () => {
       await setDoc(doc(db, "users", res.user.uid), {
         username,
         email,
-        avatar: imgUrl,
         id: res.user.uid,
+        avatar: imgUrl,
         blocked: [],
       });
       console.log("User document set"); // Debugging statement
@@ -48,7 +48,7 @@ const Login = () => {
         chats: [],
       });
       console.log("User chats document set"); // Debugging statement
-
+toast.success("User created successfully! You can Login now");
       
     } catch (err) {
       console.error("Error during registration:", err); // Debugging statement
