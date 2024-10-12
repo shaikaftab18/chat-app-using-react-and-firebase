@@ -1,4 +1,4 @@
-import List from "./components/list/List";
+import ChatList from "./components/list/chatList/ChatList";
 import Chat from "./components/chat/Chat";
 import Detail from "./components/detail/detail";
 import Login from "./components/login/login";
@@ -7,12 +7,15 @@ import { useEffect } from "react";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "./lib/firebase";
 import useUserStore from "./lib/userStore";
+import useChatStore from "./lib/chatStore";
+
 const App = () => {
   const { currentUser, isLoading, fetchUserInfo } = useUserStore();
+  const { chatId, changeChatId } = useChatStore();
 
   useEffect(() => {
     const unSub = onAuthStateChanged(auth, (user) => {
-        fetchUserInfo(user?.uid);
+      fetchUserInfo(user?.uid);
     });
     return () => {
       unSub();
@@ -27,9 +30,9 @@ const App = () => {
     <div className="container">
       {currentUser ? (
         <>
-          <List />
-          <Chat />
-          <Detail />
+          <ChatList changeChatId={changeChatId} />
+          {chatId && <Chat />}
+          {chatId && <Detail />}
         </>
       ) : (
         <Login />

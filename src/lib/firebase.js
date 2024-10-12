@@ -4,7 +4,7 @@ import { getFirestore } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
 
 export const firebaseConfig = {
-  apiKey: import.meta.env.VITE_API_KEY,
+  apiKey:"AIzaSyCGc9DdyS1oWHJtVOLEauyOWgEZ-HNo4Wc",
   authDomain: "aftab-sreactchatapp.firebaseapp.com",
   projectId: "aftab-sreactchatapp",
   storageBucket: "aftab-sreactchatapp.appspot.com",
@@ -14,6 +14,6 @@ export const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
-export const auth = getAuth();
-export const db = getFirestore();
-export const storage = getStorage();
+export const auth = getAuth(app);
+export const db = getFirestore(app);
+export const storage = getStorage(app);

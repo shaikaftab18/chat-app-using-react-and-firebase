@@ -1,10 +1,12 @@
 import React, { useState } from "react";
-import { collection, query, where, getDocs } from "firebase/firestore";
+import { collection, query, where, getDocs, doc, setDoc, updateDoc, arrayUnion, serverTimestamp } from "firebase/firestore";
 import "./addUser.css";
 import { db } from "../../../../lib/firebase";
+import { useUserStore } from "../../../../lib/userStore"; // Assuming you have a user store to get the current user
 
-const AddUser = () => {
+const AddUser = ({ onChatAdded }) => {
   const [user, setUser] = useState(null);
+  const { currentUser } = useUserStore(); // Get the current user from your user store
 
   const handleSearch = async (e) => {
     e.preventDefault();
@@ -26,6 +28,60 @@ const AddUser = () => {
     }
   };
 
+  const handleAdd = async () => {
+    if (!user) return;
+
+    const chatRef = collection(db, "chats");
+    const userChatsRef = collection(db, "userChats");
+
+    try {
+      const newChatRef = doc(chatRef);
+      console.log("Creating new chat document...");
+      await setDoc(newChatRef, {
+        createdAt: serverTimestamp(),
+        messages: [],
+        participants: [currentUser.id, user.id]
+      });
+      console.log("Chat document created:", newChatRef.id);
+
+      console.log("Updating userChats for user:", user.id);
+      await updateDoc(doc(userChatsRef, user.id), {
+        chats: arrayUnion({
+          chatId: newChatRef.id,
+          receiverId: currentUser.id,
+          lastMessage: ""
+        })
+      });
+      await updateDoc(doc(userChatsRef, user.id), {
+        updatedAt: serverTimestamp()
+      });
+
+      console.log("Updating userChats for currentUser:", currentUser.id);
+      await updateDoc(doc(userChatsRef, currentUser.id), {
+        chats: arrayUnion({
+          chatId: newChatRef.id,
+          receiverId: user.id,
+          lastMessage: ""
+        })
+      });
+      await updateDoc(doc(userChatsRef, currentUser.id), {
+        updatedAt: serverTimestamp()
+      });
+
+      console.log("Chat added successfully");
+
+      // Call the callback function to update the chat list in ChatList
+      onChatAdded({
+        chatId: newChatRef.id,
+        receiverId: user.id,
+        lastMessage: "",
+        updatedAt: new Date() // Use the current date for sorting
+      });
+    } catch (err) {
+      console.error("Error adding chat:", err);
+    }
+  };
+
   return (
     <div className="addUser">
       <form onSubmit={handleSearch}>
@@ -38,7 +94,7 @@ const AddUser = () => {
             <img src={user.avatar || "./avatar.png"} alt="Avatar" />
             <span>{user.username}</span>
           </div>
-          <button>Add User</button>
+          <button onClick={handleAdd}>Add User</button>
         </div>
       )}
     </div>
